@@ -1,0 +1,11 @@
+resolver: lts-14.27
+
+packages:
+- Parser
+- CDSL
+
+extra-deps: []
+
+flags: {}
+
+extra-package-dbs: []

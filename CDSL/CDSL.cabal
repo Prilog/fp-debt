@@ -1,0 +1,38 @@
+name:                CDSL
+version:             0.1.0.0
+synopsis:            Synopsis
+description:         C++ CDSL language
+
+homepage:            -
+license:             MIT
+license-file:        LICENSE
+author:              Semen Trapeznikov
+maintainer:          sementrapeznikov@gmail.com
+copyright:           2020 Semen Trapeznikov
+
+category:            Web
+build-type:          Simple
+extra-source-files:
+cabal-version:       >=1.10
+tested-with:         GHC == 8.0.1
+
+library
+  hs-source-dirs:    src
+  exposed-modules:   CDSL
+                    ,Free
+                    ,CDSLResult
+  ghc-options:       -Wall
+  build-depends:     base >= 4.9 && < 5
+                    ,array
+  default-language:  Haskell2010
+
+executable CDSL-exe
+  main-is:           Main.hs
+  other-modules:     CDSL
+                    ,Free
+                    ,CDSLResult
+  hs-source-dirs:    src
+  ghc-options: -threaded -rtsopts -with-rtsopts=-N
+  build-depends:     base >=4.7 && <5
+  default-language: Haskell2010
+

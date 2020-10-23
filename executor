@@ -1,0 +1,10 @@
+#!/bin/bash
+
+echo "put filepath to interpret"
+read path
+cp $path source.cpp
+stack build Parser
+stack exec Parser-exe
+cp CDSLResult.hs CDSL/src/CDSLResult.hs
+stack build CDSL
+stack exec CDSL-exe
