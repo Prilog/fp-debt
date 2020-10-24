@@ -11,4 +11,4 @@ There are 4 examples:
 * example.cpp - shows many features which have been implemented.
 * example2.cpp - 6th fibonacci number calculation
 * example3.cpp - endless loop to kill your pc
-* example4.cpp - talker, which concatenates strings
+* example4.cpp - simple evaluator with while structure
