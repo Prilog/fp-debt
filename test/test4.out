@@ -1,0 +1,9 @@
+=================
+print required action:
+"exe" - execute file CDSLResult.hs
+*filename* - interpretes CDSLResult.hs into file *filename*
+7 7
+8 6
+9 5
+finished
+main returned with exit code: 0

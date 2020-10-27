@@ -1,0 +1,7 @@
+=================
+print required action:
+"exe" - execute file CDSLResult.hs
+*filename* - interpretes CDSLResult.hs into file *filename*
+What is your name?
+go delat' teorver
+kirillbotaibotaibotaibotaibotaikirillmain returned with exit code: 0

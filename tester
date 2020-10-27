@@ -1,0 +1,28 @@
+#!/bin/bash
+
+echo "Start testing"
+flag=0
+
+for filename in ./test/*.cpp; do
+  name=${filename%.cpp}
+  echo $name
+  in="${name}.in"
+  out="${name}.out"
+  cp $filename source.cpp
+  stack build Parser
+  stack exec Parser-exe
+  cp CDSLResult.hs CDSL/src/CDSLResult.hs
+  stack build CDSL
+  cat $in | stack exec CDSL-exe > testResult.out
+  if cmp -s "$out" "testResult.out"; then
+    printf 'Test "%s" is succesfull\n' "$name"
+  else
+    printf 'Test "%s" failed\n' "$name"
+    flag=1
+    break
+  fi
+done
+
+if [ "$flag" -eq 0 ]; then
+  echo "Testing succesfull"
+fi
