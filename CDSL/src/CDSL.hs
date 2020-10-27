@@ -328,54 +328,54 @@ execBinary a b ev = do
 newtype VarID a = VarID Int
 
 -- | Interprets CDSL into IO String(prints it...)
-printCDSL :: (Show a) => CDSL VarID a -> IO String
+printCDSL :: (Show a) => CDSL VarID a -> String
 printCDSL = printHelper 0 0
 
 -- | Interprets CDSL into IO String with a tabs and variable numeration from b
-printHelper :: Int -> Int -> CDSL VarID a -> IO String
-printHelper _ _ (Pure _) = return ""
+printHelper :: Int -> Int -> CDSL VarID a -> String
+printHelper _ _ (Pure _) = ""
 printHelper tabs vars (Free c) = case c of
   Number x next -> do
-    t <- printHelper tabs vars (next x)
-    return $ show x <> t
+    let t = printHelper tabs vars (next x)
+    show x <> t
   Boolean x next -> do
-    t <- printHelper tabs vars (next x)
-    return $ show x <> t
+    let t = printHelper tabs vars (next x)
+    show x <> t
   Str x next -> do
-    t <- printHelper tabs vars (next x)
-    return $ show x <> t
+    let t = printHelper tabs vars (next x)
+    show x <> t
   VInteger x f _ -> do
-    value <- printHelper tabs vars x
-    t <- printHelper tabs (vars + 1) (f (VarID vars))
-    return $ printTabs tabs <> "int var" <> show vars <> " = " <> 
+    let value = printHelper tabs vars x
+    let t = printHelper tabs (vars + 1) (f (VarID vars))
+    printTabs tabs <> "int var" <> show vars <> " = " <> 
       value <> ";\n" <> t
   VDouble x f _ -> do
-    value <- printHelper tabs vars x
-    t <- printHelper tabs (vars + 1) (f (VarID vars))
-    return $ printTabs tabs <> "double var" <> show vars <> " = " <> 
+    let value = printHelper tabs vars x
+    let t = printHelper tabs (vars + 1) (f (VarID vars))
+    printTabs tabs <> "double var" <> show vars <> " = " <> 
       value <> ";\n" <> t
   VBool x f _ -> do
-    value <- printHelper tabs vars x
-    t <- printHelper tabs (vars + 1) (f (VarID vars))
-    return $ printTabs tabs <> "bool var" <> show vars <> " = " <> 
+    let value = printHelper tabs vars x
+    let t = printHelper tabs (vars + 1) (f (VarID vars))
+    printTabs tabs <> "bool var" <> show vars <> " = " <> 
       value <> ";\n" <> t
   VStr x f _ -> do
-    value <- printHelper tabs vars x
-    t <- printHelper tabs (vars + 1) (f (VarID vars))
-    return $ printTabs tabs <> "string var" <> show vars <> " = " <> 
+    let value = printHelper tabs vars x
+    let t = printHelper tabs (vars + 1) (f (VarID vars))
+    printTabs tabs <> "string var" <> show vars <> " = " <> 
       value <> ";\n" <> t
   Set (VarID x) v next -> do
-    value <- printHelper tabs vars v
-    t <- printHelper tabs vars next
-    return $ printTabs tabs <> "var" <> show x <> " = " <> value <> ";\n" <> t
-  Get (VarID x) _ -> return $ "var" <> show x
+    let value = printHelper tabs vars v
+    let t = printHelper tabs vars next
+    printTabs tabs <> "var" <> show x <> " = " <> value <> ";\n" <> t
+  Get (VarID x) _ -> "var" <> show x
   Read (VarID x) next -> do
-    t <- printHelper tabs vars next
-    return $ printTabs tabs <> "getline(cin, var" <> show x <> ");\n" <> t
+    let t = printHelper tabs vars next
+    printTabs tabs <> "getline(cin, var" <> show x <> ");\n" <> t
   Write x next -> do
-    value <- printHelper tabs vars x
-    t <- printHelper tabs vars next
-    return $ printTabs tabs <> "cout << " <> value <> ";\n" <> t
+    let value = printHelper tabs vars x
+    let t = printHelper tabs vars next
+    printTabs tabs <> "cout << " <> value <> ";\n" <> t
   Greater a b _ -> printBinary a b ">"
   Less a b _ -> printBinary a b "<"
   Equal a b _ -> printBinary a b "=="
@@ -383,62 +383,58 @@ printHelper tabs vars (Free c) = case c of
   Minus a b _ -> printBinary a b "-"
   Multiply a b _ -> printBinary a b "*"  
   If st tr fl next -> do
-    statement <- printHelper tabs vars st
-    truePart <- printHelper (tabs + 1) vars tr
-    falsePart <- printHelper (tabs + 1) vars fl
-    t <- printHelper tabs vars $ next undefined
-    return $ printTabs tabs <> "if (" <> statement <> ") {\n" <> 
+    let statement = printHelper tabs vars st
+    let truePart = printHelper (tabs + 1) vars tr
+    let falsePart = printHelper (tabs + 1) vars fl
+    let t = printHelper tabs vars $ next undefined
+    printTabs tabs <> "if (" <> statement <> ") {\n" <> 
       truePart <> printTabs tabs <> "} else {\n" <> falsePart <> 
       printTabs tabs <> "}\n" <> t
   While st ac next -> do
-    statement <- printHelper tabs vars st
-    body <- printHelper (tabs + 1) vars ac
-    t <- printHelper tabs vars next
-    return $ printTabs tabs <> "while (" <> statement <> ") {\n" <> body <> 
+    let statement = printHelper tabs vars st
+    let body = printHelper (tabs + 1) vars ac
+    let t = printHelper tabs vars next
+    printTabs tabs <> "while (" <> statement <> ") {\n" <> body <> 
       printTabs tabs <> "}\n" <> t
   Function0 name f next -> do
-    body <- printHelper (tabs + 1) vars f
-    t <- printHelper tabs vars next
-    return $ name <> "() {\n" <> body <> "}\n" <> t
+    let body = printHelper (tabs + 1) vars f
+    let t = printHelper tabs vars next
+    name <> "() {\n" <> body <> "}\n" <> t
   Function1 name t0 f next -> do
-    body <- printHelper (tabs + 1) (vars + 1) (f (VarID vars))
-    t <- printHelper tabs vars next
-    return $ name <> "(" <> t0 <> " var" <> show vars <> ") {\n" <> 
-      body <> "}\n" <> t
+    let body = printHelper (tabs + 1) (vars + 1) (f (VarID vars))
+    let t = printHelper tabs vars next
+    name <> "(" <> t0 <> " var" <> show vars <> ") {\n" <> body <> "}\n" <> t
   Function2 name t0 t1 f next -> do
-    body <- printHelper (tabs + 1) (vars + 2) 
-      (f (VarID vars) (VarID (vars + 1)))
-    t <- printHelper tabs vars next
-    return $ name <> "(" <> t0 <> " var" <> show vars <> ", " <> t1 <> " var" <> 
+    let fun = (f (VarID vars) (VarID (vars + 1)))
+    let body = printHelper (tabs + 1) (vars + 2) fun
+    let t = printHelper tabs vars next
+    name <> "(" <> t0 <> " var" <> show vars <> ", " <> t1 <> " var" <> 
       show (vars + 1) <> ") {\n" <> body <> "}\n" <> t
   Return val next -> do
-    value <- printHelper tabs vars val
-    t <- printHelper tabs vars $ next undefined
-    return $ printTabs tabs <> "return " <> value <> ";\n" <> t
+    let value = printHelper tabs vars val
+    let t = printHelper tabs vars $ next undefined
+    printTabs tabs <> "return " <> value <> ";\n" <> t
   RunF0 name _ next -> do
-    t <- printHelper tabs vars $ next undefined
-    return $ name <> "()" <> t
+    let t = printHelper tabs vars $ next undefined
+    name <> "()" <> t
   RunF1 name _ x next -> do
-    nx <- printHelper tabs vars x
-    t <- printHelper tabs vars $ next undefined
-    return $ name <> "(" <> nx <> ")" <> t
+    let nx = printHelper tabs vars x
+    let t = printHelper tabs vars $ next undefined
+    name <> "(" <> nx <> ")" <> t
   RunF2 name _ x y next -> do
-    nx <- printHelper tabs vars x
-    ny <- printHelper tabs vars y
-    t <- printHelper tabs vars $ next undefined
-    return $ name <> "(" <> nx <> ", " <> ny <> ")" <> t
+    let nx = printHelper tabs vars x
+    let ny = printHelper tabs vars y
+    let t = printHelper tabs vars $ next undefined
+    name <> "(" <> nx <> ", " <> ny <> ")" <> t
   Procedure val next -> do
-    value <- printHelper tabs vars val
-    t <- printHelper tabs vars $ next undefined
-    return $ printTabs tabs <> value <> ";\n" <> t
+    let value = printHelper tabs vars val
+    let t = printHelper tabs vars $ next undefined
+    printTabs tabs <> value <> ";\n" <> t
 
 -- | Interprets binary CDSL action into IO String with tabs and var numbers
 printBinary :: (Show a, Show b) => CDSL VarID a -> CDSL VarID b -> 
-  String -> IO String
-printBinary a b s = do
-  l <- printCDSL a
-  r <- printCDSL b
-  return $ l <> " " <> s <> " " <> r
+  String -> String
+printBinary a b s = (printCDSL a) <> " " <> s <> " " <> (printCDSL b)
 
 -- | Prints n tabs
 printTabs :: Int -> String

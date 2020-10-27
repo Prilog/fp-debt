@@ -12,10 +12,11 @@ main = do
   action <- getLine
   case action of
     "exe" -> do
-      execCDSL cmain
+      result <- execCDSL cmain
+      putStrLn $ "main returned with exit code: " <> show result
       return ()
     name  -> do
-      code <- printCDSL programm
+      let code = printCDSL programm
       writeFile name ("#include <string>\n" <>
                       "#include <cstdio>\n" <>
                       "#include <iostream>\n\n" <> 
