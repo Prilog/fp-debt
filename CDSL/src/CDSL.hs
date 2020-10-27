@@ -339,8 +339,9 @@ printHelper tabs vars (Free c) = case c of
     let t = printHelper tabs vars (next x)
     show x <> t
   Boolean x next -> do
+    let value = if x then "true" else "false"
     let t = printHelper tabs vars (next x)
-    show x <> t
+    value <> t
   Str x next -> do
     let t = printHelper tabs vars (next x)
     show x <> t
@@ -434,7 +435,8 @@ printHelper tabs vars (Free c) = case c of
 -- | Interprets binary CDSL action into IO String with tabs and var numbers
 printBinary :: (Show a, Show b) => CDSL VarID a -> CDSL VarID b -> 
   String -> String
-printBinary a b s = (printCDSL a) <> " " <> s <> " " <> (printCDSL b)
+printBinary a b s = "(" <> (printCDSL a) <> ") " <> s <> 
+  " (" <> (printCDSL b) <> ")"
 
 -- | Prints n tabs
 printTabs :: Int -> String
