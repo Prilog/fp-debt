@@ -3,7 +3,7 @@ void ping() {
 }
 
 void work_untill_death() {
-	while(True) {
+	while(true) {
 		ping();
 	}
 }
